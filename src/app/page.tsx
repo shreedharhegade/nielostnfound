@@ -1,66 +1,104 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import { useEffect, useState } from "react";
+import "./page.css";
+
+type Item = {
+  _id: string;
+  title: string;
+  description: string;
+  type: "lost" | "found";
+  category: string;
+  location: string;
+  date: string;
+  imageUrl?: string;
+  reporterName: string;
+  reporterEmail: string;
+};
 
 export default function Home() {
+  const [items, setItems] = useState<Item[]>([]);
+  const [filter, setFilter] = useState<"all" | "lost" | "found">("all");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchItems(filter);
+  }, [filter]);
+
+  const fetchItems = async (typeFilter: string) => {
+    setLoading(true);
+    try {
+      const url = typeFilter === "all" ? "/api/items" : `/api/items?type=${typeFilter}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.success) {
+        setItems(data.data);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    setLoading(false);
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main>
+      <div className="dashboard-header">
+        <div>
+          <h1 className="page-title">Campus Dashboard</h1>
+          <p style={{ color: "var(--text-muted)" }}>Recent lost and found reports at NIE</p>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="filters">
+          <button className={`filter-btn ${filter === "all" ? "active" : ""}`} onClick={() => setFilter("all")}>All</button>
+          <button className={`filter-btn ${filter === "lost" ? "active" : ""}`} onClick={() => setFilter("lost")}>Lost Items</button>
+          <button className={`filter-btn ${filter === "found" ? "active" : ""}`} onClick={() => setFilter("found")}>Found Items</button>
         </div>
-      </main>
-    </div>
+      </div>
+
+      {loading ? (
+        <div className="text-center mt-2">Loading items...</div>
+      ) : (
+        <div className="items-grid">
+          {items.length === 0 ? (
+            <div className="empty-state glass-card">
+              <h3>No items found</h3>
+              <p>Everything seems to be in its right place.</p>
+            </div>
+          ) : (
+            items.map((item) => (
+              <div key={item._id} className="glass-card item-card" style={{ position: "relative" }}>
+                {item.type === "lost" ? (
+                  <span className="item-badge-lost">LOST</span>
+                ) : (
+                  <span className="item-badge-found">FOUND</span>
+                )}
+                
+                <img 
+                  src={item.imageUrl ? item.imageUrl : "https://via.placeholder.com/400x200?text=No+Image"} 
+                  alt={item.title} 
+                  className="item-image" 
+                />
+                
+                <div className="item-content">
+                  <h3 className="item-title">{item.title}</h3>
+                  <p className="item-desc">{item.description}</p>
+                  
+                  <div className="item-meta">
+                    <div className="meta-row">
+                      <span>📍</span> {item.location}
+                    </div>
+                    <div className="meta-row">
+                      <span>📅</span> {new Date(item.date).toLocaleDateString()}
+                    </div>
+                    <div className="meta-row">
+                      <span>👤</span> {item.reporterName} ({item.reporterEmail})
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </main>
   );
 }
