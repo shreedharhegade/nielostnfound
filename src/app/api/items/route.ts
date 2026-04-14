@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import Item from '@/models/Item';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { writeFile } from 'fs/promises';
 import path from 'path';
 
@@ -10,8 +10,15 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
+    const reporterEmail = searchParams.get('reporterEmail');
     const query: any = {};
     if (type) query.type = type;
+    if (reporterEmail) {
+      query.reporterEmail = reporterEmail;
+    } else {
+      // If fetching for the main dashboard (no specific reporter), hide resolved items
+      query.status = 'open';
+    }
 
     await connectToDatabase();
     const items = await Item.find(query).sort({ date: -1 });

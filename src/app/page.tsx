@@ -75,7 +75,7 @@ export default function Home() {
                 
                 <div className="item-image-wrapper">
                   <img 
-                    src={item.imageUrl ? item.imageUrl : "https://via.placeholder.com/400x200?text=No+Preview"} 
+                    src={item.imageUrl ? item.imageUrl : "/default-item.svg"} 
                     alt={item.title} 
                     className="item-image" 
                   />
@@ -99,9 +99,17 @@ export default function Home() {
                       {item.reporterName}
                     </div>
                     {(item.reporterPhone || item.reporterEmail) && (
-                      <div className="meta-row" style={{ marginTop: "0.25rem", color: "var(--primary)", fontWeight: "500", fontSize: "0.8rem" }}>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                        {item.reporterPhone ? item.reporterPhone : item.reporterEmail}
+                      <div className="meta-actions" style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                        {item.reporterPhone && (
+                          <a href={`tel:${item.reporterPhone}`} className="btn-contact btn-contact-phone" style={{ flex: 1, padding: '0.4rem', border: '1px solid var(--primary)', borderRadius: '4px', textAlign: 'center', textDecoration: 'none', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: '500' }}>
+                            Call
+                          </a>
+                        )}
+                        {item.reporterEmail && (
+                          <a href={`mailto:${item.reporterEmail}`} className="btn-contact btn-contact-email" style={{ flex: 1, padding: '0.4rem', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '4px', textAlign: 'center', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '500' }}>
+                            Email
+                          </a>
+                        )}
                       </div>
                     )}
                   </div>

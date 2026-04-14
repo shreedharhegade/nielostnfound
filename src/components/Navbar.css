@@ -1,7 +1,7 @@
 .navbar {
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(249, 248, 246, 0.85);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -44,29 +44,101 @@
 }
 
 .user-menu {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  position: relative;
 }
 
-.avatar {
+.profile-trigger {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.avatar-wrapper {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid var(--primary);
-  object-fit: cover;
-}
-
-.btn-logout {
-  background: transparent;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--text-muted);
-  border: 1px solid var(--text-muted);
-  padding: 0.4rem 1rem;
-  border-radius: 6px;
   transition: all 0.3s ease;
 }
 
-.btn-logout:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+.avatar-wrapper:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: rgba(var(--primary-rgb), 0.1);
+}
+
+.avatar-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 1rem);
+  right: 0;
+  width: 240px;
+  background: rgba(239, 233, 227, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 10px 25px -5px rgba(74, 64, 54, 0.1);
+  animation: dropdownSlide 0.2s ease-out;
+  z-index: 1000;
+}
+
+.user-info {
+  margin-bottom: 1rem;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+}
+
+.user-email {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 1rem -1.25rem;
+}
+
+.btn-logout-full {
+  width: 100%;
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 0.6rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-logout-full:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

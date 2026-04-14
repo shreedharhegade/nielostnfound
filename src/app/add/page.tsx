@@ -27,7 +27,7 @@ export default function AddItem() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    
+
     const formData = new FormData(e.currentTarget);
     try {
       const res = await fetch("/api/items", {
@@ -51,16 +51,16 @@ export default function AddItem() {
       <div className="custom-card" style={{ width: "100%", maxWidth: "768px" }}>
         <h2 className="page-title text-center" style={{ marginBottom: "0.2rem" }}>Report an Item</h2>
         <p className="text-center" style={{ color: "var(--text-muted)", marginBottom: "2rem" }}>Help us keep our campus community connected</p>
-        
+
         <form onSubmit={handleSubmit}>
-          
+
           <h3 className="form-section-title">Item Details</h3>
           <div className="form-grid">
             <div className="form-group">
               <label>Report Type</label>
               <select name="type" className="form-control" required defaultValue="lost">
-                <option value="lost">I lost something</option>
-                <option value="found">I found something</option>
+                <option value="lost">LOST</option>
+                <option value="found">FOUND</option>
               </select>
             </div>
 

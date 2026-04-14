@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useState } from "react";
 import "./Navbar.css"; // We will add scoped styles or use globals
 
 export default function Navbar() {
   const { data: session } = useSession();
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   return (
     <nav className="navbar">
@@ -15,9 +17,21 @@ export default function Navbar() {
         </Link>
         <div className="nav-links">
           {session && (
-            <Link href="/add" className="btn-primary">
-              Report Item
-            </Link>
+            <>
+              <Link href="/history" className="nav-item" style={{ 
+                padding: '0.5rem 1rem', 
+                color: 'var(--text-main)', 
+                textDecoration: 'none', 
+                fontWeight: '500', 
+                marginRight: '0.5rem',
+                borderRadius: '8px'
+               }}>
+                My History
+              </Link>
+              <Link href="/add" className="btn-primary">
+                Report Item
+              </Link>
+            </>
           )}
           {!session ? (
             <button className="btn-secondary" onClick={() => signIn("google")}>
@@ -25,10 +39,26 @@ export default function Navbar() {
             </button>
           ) : (
             <div className="user-menu">
-              <img src={session.user?.image || ""} alt="Profile" className="avatar" />
-              <button className="btn-logout" onClick={() => signOut()}>
-                Logout
-              </button>
+              <div className="profile-trigger" onClick={() => setShowProfileMenu(!showProfileMenu)}>
+                <div className="avatar-wrapper">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="avatar-icon">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+                {showProfileMenu && (
+                  <div className="profile-dropdown">
+                    <div className="user-info">
+                      <p className="user-name">{session.user?.name}</p>
+                      <p className="user-email">{session.user?.email}</p>
+                    </div>
+                    <div className="dropdown-divider"></div>
+                    <button className="btn-logout-full" onClick={() => signOut()}>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
