@@ -3,8 +3,7 @@ import connectToDatabase from '@/lib/mongodb';
 import Item from '@/models/Item';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { writeFile } from 'fs/promises';
-import path from 'path';
+import { v2 as cloudinary } from 'cloudinary';
 
 export async function GET(request: Request) {
   try {
@@ -52,15 +51,20 @@ export async function POST(request: Request) {
 
     if (image && image.size > 0) {
       const buffer = Buffer.from(await image.arrayBuffer());
-      const filename = Date.now() + '_' + image.name.replace(/\s+/g, '_');
-      const publicDir = path.join(process.cwd(), 'public', 'uploads');
       
-      // Ensure the public/uploads directory exists
       try {
-        await writeFile(path.join(publicDir, filename), buffer);
-        imageUrl = `/uploads/${filename}`;
+        imageUrl = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: 'nielostnfound' },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result?.secure_url as string);
+            }
+          );
+          uploadStream.end(buffer);
+        });
       } catch (err) {
-        console.error("Image upload failed, fallback to none", err);
+        console.error("Cloudinary upload failed, fallback to none", err);
       }
     }
 

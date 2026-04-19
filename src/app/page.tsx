@@ -75,7 +75,7 @@ export default function Home() {
                 
                 <div className="item-image-wrapper">
                   <img 
-                    src={item.imageUrl ? item.imageUrl : "/default-item.svg"} 
+                    src={item.imageUrl ? (item.imageUrl.startsWith('/uploads/') ? `/api${item.imageUrl}` : item.imageUrl) : "/default-item.svg"} 
                     alt={item.title} 
                     className="item-image" 
                   />
