@@ -63,8 +63,9 @@ export async function POST(request: Request) {
           );
           uploadStream.end(buffer);
         });
+        console.log("CLOUDINARY UPLOAD SUCCESS: ", imageUrl);
       } catch (err) {
-        console.error("Cloudinary upload failed, fallback to none", err);
+        console.error("Cloudinary upload failed, fallback to none. ERROR DETAILS:", err);
       }
     }
 
