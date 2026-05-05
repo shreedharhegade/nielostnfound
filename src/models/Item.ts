@@ -12,24 +12,45 @@ export interface IItem {
   reporterEmail: string;
   reporterName: string;
   reporterPhone?: string;
-  status: "open" | "resolved";
+  status: "open" | "resolved" | "expired";
+  deletedAt?: Date | null;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-const ItemSchema = new Schema<IItem>({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  type: { type: String, enum: ["lost", "found"], required: true },
-  category: { type: String, default: "Other" },
-  location: { type: String, required: true },
-  date: { type: Date, required: true },
-  imageUrl: { type: String },
-  reporterEmail: { type: String, required: true },
-  reporterName: { type: String, required: true },
-  reporterPhone: { type: String, required: false },
-  status: { type: String, enum: ["open", "resolved"], default: "open" },
-  createdAt: { type: Date, default: Date.now }
-});
+const ItemSchema = new Schema<IItem>(
+  {
+    title: { type: String, required: true, maxlength: 100, trim: true },
+    description: { type: String, required: true, maxlength: 500, trim: true },
+    type: { type: String, enum: ["lost", "found"], required: true },
+    category: {
+      type: String,
+      enum: ["Electronics", "Keys", "Documents", "Clothing", "Other"],
+      default: "Other",
+    },
+    location: { type: String, required: true, maxlength: 200, trim: true },
+    date: { type: Date, required: true },
+    imageUrl: { type: String },
+    reporterEmail: { type: String, required: true, lowercase: true, trim: true },
+    reporterName: { type: String, required: true, trim: true },
+    reporterPhone: { type: String },
+    status: {
+      type: String,
+      enum: ["open", "resolved", "expired"],
+      default: "open",
+    },
+    // Soft-delete: null means active, a Date means deleted
+    deletedAt: { type: Date, default: null },
+  },
+  { timestamps: true }
+);
+
+// --- Indexes for query performance ---
+ItemSchema.index({ type: 1, status: 1, date: -1 });   // main dashboard
+ItemSchema.index({ reporterEmail: 1, createdAt: -1 }); // user history
+ItemSchema.index({ deletedAt: 1 });                     // soft-delete filter
+ItemSchema.index({ title: "text", description: "text" }); // full-text search
+ItemSchema.index({ category: 1, status: 1 });          // category filter
 
 const Item = models.Item || model<IItem>("Item", ItemSchema);
 
