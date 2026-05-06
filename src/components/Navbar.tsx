@@ -22,15 +22,15 @@ export default function Navbar() {
           {session && (
             <>
               {isAdmin && (
-                <Link href="/admin" className="nav-link" style={{ color: "var(--primary)", fontWeight: 600 }}>
+                <Link href="/admin" className="nav-item" style={{ padding: "0.5rem 1rem", color: "var(--primary)", textDecoration: "none", fontWeight: 600, marginRight: "0.25rem", borderRadius: "8px", border: "1px solid var(--primary)", fontSize: "0.875rem" }}>
                   Admin
                 </Link>
               )}
-              <Link href="/history" className="nav-link">
-                My Items
+              <Link href="/history" className="nav-item" style={{ padding: "0.5rem 1rem", color: "var(--text-main)", textDecoration: "none", fontWeight: "500", marginRight: "0.5rem", borderRadius: "8px" }}>
+                My History
               </Link>
-              <Link href="/add" className="btn-primary" style={{ fontSize: "0.875rem", padding: "0.5rem 1.1rem" }}>
-                + Report Item
+              <Link href="/add" className="btn-primary">
+                Report Item
               </Link>
             </>
           )}

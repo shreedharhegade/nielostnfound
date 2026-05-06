@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useSession } from "next-auth/react";
 import "./page.css";
 
 type Item = {
@@ -14,7 +13,6 @@ type Item = {
   date: string;
   imageUrl?: string;
   reporterName: string;
-  reporterEmail?: string;
   reporterPhone?: string;
   status: string;
 };
@@ -37,7 +35,6 @@ function SkeletonCard() {
 }
 
 export default function Home() {
-  const { data: session } = useSession();
   const [items, setItems] = useState<Item[]>([]);
   const [filter, setFilter] = useState<"all" | "lost" | "found">("all");
   const [category, setCategory] = useState("All");
@@ -196,19 +193,6 @@ export default function Home() {
                           <a href={`tel:${item.reporterPhone}`} className="btn-contact btn-contact-phone">
                             Call
                           </a>
-                        </div>
-                      )}
-                      {session ? (
-                        item.reporterEmail && (
-                          <div className="meta-actions">
-                            <a href={`mailto:${item.reporterEmail}`} className="btn-contact btn-contact-email">
-                              Email Reporter
-                            </a>
-                          </div>
-                        )
-                      ) : (
-                        <div className="meta-actions">
-                          <p className="login-to-contact">Login to view contact details</p>
                         </div>
                       )}
                     </div>

@@ -10,8 +10,8 @@ import { checkRateLimit } from '@/lib/rateLimit';
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 const PAGE_SIZE = 12;
 
-// Fields shown to guests (not logged in) — email hidden
-const GUEST_PROJECTION = {
+// Fields exposed to unauthenticated users — email is excluded
+const PUBLIC_PROJECTION = {
   title: 1, description: 1, type: 1, category: 1,
   location: 1, date: 1, imageUrl: 1, reporterName: 1,
   reporterPhone: 1, status: 1, createdAt: 1,
@@ -20,14 +20,14 @@ const GUEST_PROJECTION = {
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const type          = searchParams.get('type');
-    const category      = searchParams.get('category');
-    const search        = searchParams.get('search');
-    const page          = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
+    const type        = searchParams.get('type');
+    const category    = searchParams.get('category');
+    const search      = searchParams.get('search');
+    const page        = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
     const reporterEmail = searchParams.get('reporterEmail');
 
-    const session      = await getServerSession(authOptions);
-    const isLoggedIn   = !!session?.user?.email;
+    // Only authenticated users may query by reporterEmail (their own history)
+    const session = await getServerSession(authOptions);
     const isOwnerQuery = reporterEmail && session?.user?.email === reporterEmail;
 
     const query: Record<string, unknown> = { deletedAt: null };
@@ -35,6 +35,7 @@ export async function GET(request: Request) {
     if (isOwnerQuery) {
       query.reporterEmail = reporterEmail;
     } else {
+      // Public dashboard: open items only, no PII filter
       query.status = 'open';
       if (type && ['lost', 'found'].includes(type)) query.type = type;
       if (category) query.category = category;
@@ -43,12 +44,8 @@ export async function GET(request: Request) {
 
     await connectToDatabase();
 
-    // Logged-in users get email so they can contact the reporter
-    // Guests see everything except email
-    const projection = isOwnerQuery ? undefined : (isLoggedIn ? undefined : GUEST_PROJECTION);
-
     const [items, total] = await Promise.all([
-      Item.find(query, projection)
+      Item.find(query, isOwnerQuery ? undefined : PUBLIC_PROJECTION)
         .sort(search ? { score: { $meta: 'textScore' }, date: -1 } : { date: -1 })
         .skip((page - 1) * PAGE_SIZE)
         .limit(PAGE_SIZE)
@@ -93,6 +90,7 @@ export async function POST(request: Request) {
       phone:       formData.get('phone'),
     };
 
+    // Server-side validation
     const errors = validateItemInput(rawData as Record<string, unknown>);
     if (errors.length > 0) {
       return NextResponse.json({ success: false, errors }, { status: 422 });
@@ -100,6 +98,7 @@ export async function POST(request: Request) {
 
     const image = formData.get('image') as File | null;
 
+    // Image size guard (before sending to Cloudinary)
     if (image && image.size > MAX_IMAGE_BYTES) {
       return NextResponse.json(
         { success: false, error: 'Image must be smaller than 5 MB' },
@@ -115,7 +114,7 @@ export async function POST(request: Request) {
       try {
         imageUrl = await new Promise<string>((resolve, reject) => {
           const uploadStream = cloudinary.uploader.upload_stream(
-            { folder: 'nielostnfound' },
+            { folder: 'nielostnfound', moderation: 'aws_rek' },
             (error, result) => {
               if (error) reject(error);
               else resolve(result?.secure_url ?? '');
@@ -125,6 +124,7 @@ export async function POST(request: Request) {
         });
       } catch (err) {
         console.error('Cloudinary upload failed:', err);
+        // Non-fatal — item is created without image
       }
     }
 
