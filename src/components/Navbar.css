@@ -1,0 +1,158 @@
+.navbar {
+  background: var(--navbar-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 62px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: var(--text-main);
+  letter-spacing: -0.2px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.logo-highlight { color: var(--primary); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-md);
+  transition: color 0.18s, background 0.18s;
+  white-space: nowrap;
+}
+.nav-link:hover { color: var(--text-main); background: var(--border-color); }
+.nav-link-admin { color: var(--primary); border: 1px solid var(--primary); }
+.nav-link-admin:hover { background: var(--primary-light); }
+
+.nav-report-btn {
+  font-size: 0.85rem !important;
+  padding: 0.5rem 1rem !important;
+  white-space: nowrap;
+}
+
+/* ── Dark mode toggle ── */
+.theme-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface-color);
+  border: 1.5px solid var(--border-color) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  padding: 0 !important;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  border-color: var(--primary) !important;
+  color: var(--primary);
+  background: var(--primary-light);
+}
+.theme-toggle svg { width: 16px; height: 16px; }
+
+/* ── Avatar ── */
+.user-menu { position: relative; }
+.profile-trigger { cursor: pointer; display: flex; align-items: center; }
+
+.avatar-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface-color);
+  border: 1.5px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all 0.18s ease;
+  overflow: hidden;
+}
+.avatar-wrapper:hover { border-color: var(--primary); color: var(--primary); }
+.avatar-img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-icon { width: 18px; height: 18px; }
+
+/* ── Dropdown ── */
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  width: 220px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: var(--shadow-lg);
+  animation: dropdownSlide 0.18s ease-out;
+  z-index: 1000;
+}
+
+.user-info { margin-bottom: 0.75rem; }
+.user-name { font-weight: 600; color: var(--text-main); font-size: 0.9rem; margin-bottom: 0.2rem; }
+.user-email { font-size: 0.75rem; color: var(--text-muted); word-break: break-all; }
+
+.dropdown-divider { height: 1px; background: var(--border-color); margin: 0.75rem -1rem; }
+
+.dropdown-link {
+  display: block;
+  padding: 0.45rem 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  transition: all 0.15s;
+  margin-bottom: 0.15rem;
+}
+.dropdown-link:hover { background: var(--bg-color); color: var(--text-main); }
+
+.btn-logout-full {
+  width: 100%;
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid rgba(192,57,43,0.2) !important;
+  padding: 0.5rem !important;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.25rem;
+  transition: all 0.18s ease;
+}
+.btn-logout-full:hover { background: rgba(192,57,43,0.07); border-color: var(--danger) !important; }
+
+@keyframes dropdownSlide {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+  .navbar-container { padding: 0 1rem; }
+  .nav-link:not(.nav-link-admin) { display: none; }
+  .nav-report-btn { display: none; }
+}
