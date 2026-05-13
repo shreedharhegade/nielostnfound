@@ -8,9 +8,13 @@ export const metadata: Metadata = {
   description: 'Lost and Found items dashboard for National Institute of Engineering, Mysore',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body>
         <SessionWrapper>
           <Navbar />
