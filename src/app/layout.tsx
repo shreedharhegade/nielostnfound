@@ -14,7 +14,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Apply saved theme before paint to avoid flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var t = localStorage.getItem('theme');
+                var d = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+              } catch(e) {}
+            `,
+          }}
+        />
+      </head>
       <body>
         <SessionWrapper>
           <Navbar />
