@@ -4,7 +4,7 @@ import SessionWrapper from '@/components/SessionWrapper'
 import Navbar from '@/components/Navbar'
 
 export const metadata: Metadata = {
-  title: 'Campus Connect',
+  title: 'Lost N Found',
   description: 'Lost and Found items dashboard for National Institute of Engineering, Mysore',
 }
 

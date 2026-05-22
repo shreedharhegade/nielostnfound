@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     const adminEmail = process.env.EMAIL_USER;
     if (adminEmail) {
       const adminEmailText = `
-An item has been flagged by a user on Campus Connect.
+An item has been flagged by a user on Lost N Found.
 
 Item Title: ${item.title}
 Item ID: ${item._id}
@@ -59,7 +59,7 @@ Please review this item in the database or admin dashboard.
 
       await sendEmail({
         to: adminEmail,
-        subject: `[Campus Connect] Action Required: Item Flagged - ${item.title}`,
+        subject: `[Lost N Found] Action Required: Item Flagged - ${item.title}`,
         text: adminEmailText,
       });
     }

@@ -146,7 +146,7 @@ export default function AdminPage() {
       <div className="dashboard-header">
         <div>
           <h1 className="page-title">Admin Panel</h1>
-          <p style={{ color: "var(--text-muted)" }}>Moderation &amp; analytics — Campus Connect</p>
+          <p style={{ color: "var(--text-muted)" }}>Moderation &amp; analytics — Lost N Found</p>
         </div>
         <div style={{ display: "flex", gap: "0.5rem", background: "var(--surface-color)", padding: "0.4rem", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
           <button style={navStyle("analytics")} onClick={() => setView("analytics")}>Analytics</button>

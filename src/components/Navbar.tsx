@@ -40,7 +40,7 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="navbar-container">
         <Link href="/" className="logo">
-          Campus <span className="logo-highlight">Connect</span>
+          Lost N <span className="logo-highlight">Found</span>
         </Link>
         <div className="nav-links">
           <button onClick={toggleTheme} className="theme-toggle" style={{ background: "transparent", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-main)", padding: "0.5rem" }} title="Toggle Dark Mode">

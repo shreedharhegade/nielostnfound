@@ -80,7 +80,7 @@ export default function AddItem() {
       <div className="custom-card" style={{ width: "100%", maxWidth: "768px" }}>
         <h2 className="page-title text-center" style={{ marginBottom: "0.2rem" }}>Report an Item</h2>
         <p className="text-center" style={{ color: "var(--text-muted)", marginBottom: "2rem" }}>
-          Help us keep our campus community connected
+          Help us keep our community connected
         </p>
 
         {globalError && <div className="alert alert-error">{globalError}</div>}
